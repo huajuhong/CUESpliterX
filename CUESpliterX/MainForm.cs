@@ -387,6 +387,8 @@ namespace CUESpliterX
                     var album = GetAlbumFormCueFile(textBox1.Text);
                     if (!File.Exists(album.File))
                         throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
+                    textBox3.Text = album.Performer;
+                    textBox4.Text = album.Title;
                     AppendTextSafe(textBox5, $"{album.Title} {album.Performer} {album.TotalTime}");
                     album.Tracks.ForEach(track =>
                     {

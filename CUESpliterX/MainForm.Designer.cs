@@ -59,6 +59,7 @@
             textBox1.AllowDrop = true;
             textBox1.Location = new Point(12, 29);
             textBox1.Name = "textBox1";
+            textBox1.ReadOnly = true;
             textBox1.Size = new Size(679, 23);
             textBox1.TabIndex = 1;
             textBox1.DragDrop += textBox1_DragDrop;
