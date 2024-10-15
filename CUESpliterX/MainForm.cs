@@ -24,7 +24,7 @@ namespace CUESpliterX
             this.MaximumSize = this.Size; // 设置最大尺寸
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
             string cueFilePath = textBox1.Text.Trim();
             string outputDirectory = textBox2.Text.Trim();
@@ -39,9 +39,10 @@ namespace CUESpliterX
                 return;
             }
             // 解析CUE文件
-            var album = GetAlbumFormCueFile(cueFilePath);
+            AlbumInfo album = GetAlbumFormCueFile(cueFilePath);
             if (!File.Exists(album.File))
                 throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
+
             string performer = textBox3.Text.Trim();
             string title = textBox4.Text.Trim();
             if (!string.IsNullOrEmpty(performer)) album.Performer = performer;
@@ -68,9 +69,29 @@ namespace CUESpliterX
                 }
                 string cleanedPath = ReplaceInvalidFileChars(track.Title);
                 string outputFile = Path.Combine(outputDirectory, $"{track.Index:D2} - {cleanedPath}{Path.GetExtension(album.File)}");
-                CutAudioSegment(album.File, track.StartTime!.Value, track.NextStartTime!.Value, outputFile);
+                bool overridden = false;
+                if (File.Exists(outputFile))
+                {
+                    if (checkBox1.Checked)
+                    {
+                        File.Delete(outputFile);
+                        overridden = true;
+                    }
+                    else
+                    {
+                        WriteTrackLog(track, "已存在，跳过");
+                        continue;
+                    }
+                }
+                await CutAudioSegmentAsync(album.File, track.StartTime!.Value, track.NextStartTime!.Value, outputFile);
+                WriteTrackLog(track, "已完成" + (overridden ? "，覆盖" : ""));
                 AddMetadata(outputFile, track.Title, album.Performer, album.Title);
             }
+        }
+
+        private void WriteTrackLog(TrackInfo track, string content)
+        {
+            AppendTextSafe(textBox5, $"{track.Index} {track.Title} {track.Performer} {track.StartTime} {content}");
         }
 
         private static AlbumInfo GetAlbumFormCueFile(string cueFilePath, string newPerformer = "", string newTitle = "")
@@ -200,32 +221,81 @@ namespace CUESpliterX
             return new string(input.Select(c => invalidChars.Contains(c) ? replacement : c).ToArray());
         }
 
-        private static void CutAudioSegment(string inputFile, TimeSpan start, TimeSpan end, string outputFile)
+        private async Task CutAudioSegmentAsync(string inputFile, TimeSpan start, TimeSpan end, string outputFile)
         {
             var startInfo = new ProcessStartInfo
             {
-                FileName = "ffmpeg", // 确保 ffmpeg.exe 在系统 PATH 中
+                FileName = "ffmpeg",
                 Arguments = $"-i \"{inputFile}\" -ss {start} -t {(end - start).TotalSeconds} -c copy \"{outputFile}\"",
                 RedirectStandardOutput = true,
-                RedirectStandardError = true,  // 捕获错误信息
+                RedirectStandardError = true,
                 UseShellExecute = false,
-                CreateNoWindow = true  // 不显示命令行窗口
+                CreateNoWindow = true
             };
 
             using (var process = new Process { StartInfo = startInfo })
             {
+                // 1
+                //process.OutputDataReceived += (sender, e) =>
+                //{
+                //    if (!string.IsNullOrEmpty(e.Data))
+                //        Console.WriteLine("FFmpeg output: " + e.Data);
+                //};
+
+                //process.ErrorDataReceived += (sender, e) =>
+                //{
+                //    if (!string.IsNullOrEmpty(e.Data))
+                //        Console.WriteLine("FFmpeg error: " + e.Data);
+                //};
+                //process.Start();
+
+                //process.BeginOutputReadLine();
+                //process.BeginErrorReadLine();
+
+                //process.WaitForExit();
+
+                //if (process.ExitCode != 0)
+                //    throw new Exception("FFmpeg execution failed");
+
+                // 2
+                //process.Start();
+
+                //var outputBuilder = new StringBuilder();
+                //var errorBuilder = new StringBuilder();
+
+                //Task.Run(() =>
+                //{
+                //    while (!process.StandardOutput.EndOfStream)
+                //        outputBuilder.AppendLine(process.StandardOutput.ReadLine());
+                //});
+
+                //Task.Run(() =>
+                //{
+                //    while (!process.StandardError.EndOfStream)
+                //        errorBuilder.AppendLine(process.StandardError.ReadLine());
+                //});
+
+                //process.WaitForExit();
+
+                //if (process.ExitCode != 0)
+                //    throw new Exception($"FFmpeg error: {errorBuilder}");
+
+                //Console.WriteLine("FFmpeg output: " + outputBuilder);
+
+                // 3
                 process.Start();
 
-                // 捕获 FFmpeg 输出和错误信息
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
+                // 异步读取输出和错误
+                var outputTask = process.StandardOutput.ReadToEndAsync();
+                var errorTask = process.StandardError.ReadToEndAsync();
 
+                await Task.WhenAll(outputTask, errorTask); // 等待所有读取完成
                 process.WaitForExit();
 
                 if (process.ExitCode != 0)
-                    throw new Exception($"FFmpeg error: {error}");
+                    throw new Exception($"FFmpeg error: {errorTask.Result}");
 
-                Console.WriteLine("FFmpeg output: " + output);
+                //AppendTextSafe(textBox5, "FFmpeg output: " + outputTask.Result);
             }
         }
 
@@ -314,7 +384,27 @@ namespace CUESpliterX
                 {
                     textBox1.Text = fileDialog.FileName; // 显示选择的文件路径
                     textBox2.Text = Path.GetDirectoryName(fileDialog.FileName);
+                    var album = GetAlbumFormCueFile(textBox1.Text);
+                    if (!File.Exists(album.File))
+                        throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
+                    AppendTextSafe(textBox5, $"{album.Title} {album.Performer} {album.TotalTime}");
+                    album.Tracks.ForEach(track =>
+                    {
+                        AppendTextSafe(textBox5, $"{track.Index} {track.Title} {track.Performer} {track.StartTime}");
+                    });
                 }
+            }
+        }
+
+        private static void AppendTextSafe(TextBox textBox, string text)
+        {
+            if (textBox.InvokeRequired)
+            {
+                textBox.Invoke(new Action<TextBox, string>(AppendTextSafe), text);
+            }
+            else
+            {
+                textBox.AppendText(text + Environment.NewLine); // 添加换行符
             }
         }
     }

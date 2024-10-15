@@ -39,11 +39,14 @@
             label3 = new Label();
             textBox4 = new TextBox();
             label4 = new Label();
+            textBox5 = new TextBox();
+            label5 = new Label();
+            checkBox1 = new CheckBox();
             SuspendLayout();
             // 
             // button1
             // 
-            button1.Location = new Point(12, 190);
+            button1.Location = new Point(12, 150);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
@@ -73,7 +76,7 @@
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(12, 67);
+            label2.Location = new Point(12, 55);
             label2.Name = "label2";
             label2.Size = new Size(68, 17);
             label2.TabIndex = 4;
@@ -82,14 +85,14 @@
             // textBox2
             // 
             textBox2.AllowDrop = true;
-            textBox2.Location = new Point(12, 87);
+            textBox2.Location = new Point(12, 75);
             textBox2.Name = "textBox2";
-            textBox2.Size = new Size(679, 23);
+            textBox2.Size = new Size(622, 23);
             textBox2.TabIndex = 3;
             // 
             // button2
             // 
-            button2.Location = new Point(697, 87);
+            button2.Location = new Point(697, 75);
             button2.Name = "button2";
             button2.Size = new Size(75, 23);
             button2.TabIndex = 5;
@@ -110,7 +113,7 @@
             // textBox3
             // 
             textBox3.AllowDrop = true;
-            textBox3.Location = new Point(12, 148);
+            textBox3.Location = new Point(12, 121);
             textBox3.Name = "textBox3";
             textBox3.Size = new Size(174, 23);
             textBox3.TabIndex = 3;
@@ -118,7 +121,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(12, 128);
+            label3.Location = new Point(12, 101);
             label3.Name = "label3";
             label3.Size = new Size(56, 17);
             label3.TabIndex = 4;
@@ -127,7 +130,7 @@
             // textBox4
             // 
             textBox4.AllowDrop = true;
-            textBox4.Location = new Point(192, 148);
+            textBox4.Location = new Point(192, 121);
             textBox4.Name = "textBox4";
             textBox4.Size = new Size(174, 23);
             textBox4.TabIndex = 3;
@@ -135,19 +138,50 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(192, 128);
+            label4.Location = new Point(192, 101);
             label4.Name = "label4";
             label4.Size = new Size(44, 17);
             label4.TabIndex = 4;
             label4.Text = "专辑：";
+            // 
+            // textBox5
+            // 
+            textBox5.Location = new Point(12, 221);
+            textBox5.Multiline = true;
+            textBox5.Name = "textBox5";
+            textBox5.ScrollBars = ScrollBars.Vertical;
+            textBox5.Size = new Size(760, 228);
+            textBox5.TabIndex = 7;
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(12, 201);
+            label5.Name = "label5";
+            label5.Size = new Size(68, 17);
+            label5.TabIndex = 4;
+            label5.Text = "输出日志：";
+            // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(640, 77);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(51, 21);
+            checkBox1.TabIndex = 8;
+            checkBox1.Text = "覆盖";
+            checkBox1.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(checkBox1);
+            Controls.Add(textBox5);
             Controls.Add(button3);
             Controls.Add(button2);
+            Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -176,5 +210,8 @@
         private Label label3;
         private TextBox textBox4;
         private Label label4;
+        private TextBox textBox5;
+        private Label label5;
+        private CheckBox checkBox1;
     }
 }
