@@ -97,7 +97,7 @@ namespace CUESpliterX
         private static AlbumInfo GetAlbumFormCueFile(string cueFilePath, string newPerformer = "", string newTitle = "")
         {
             AlbumInfo album = new() { Tracks = [] };
-            var lines = File.ReadLines(cueFilePath, Encoding.GetEncoding("GB2312")).ToList();
+            var lines = File.ReadLines(cueFilePath, gb2312).ToList();
 
             // 设置用于解析音轨的计数器
             for (int i = 0; i < lines.Count; i++)
@@ -339,6 +339,7 @@ namespace CUESpliterX
             {
                 // 将第一个文件的路径显示在 TextBox 中
                 textBox1.Text = files[0];
+                LoadAlbum(textBox1.Text);
             }
         }
 
@@ -384,18 +385,23 @@ namespace CUESpliterX
                 {
                     textBox1.Text = fileDialog.FileName; // 显示选择的文件路径
                     textBox2.Text = Path.GetDirectoryName(fileDialog.FileName);
-                    var album = GetAlbumFormCueFile(textBox1.Text);
-                    if (!File.Exists(album.File))
-                        throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
-                    textBox3.Text = album.Performer;
-                    textBox4.Text = album.Title;
-                    AppendTextSafe(textBox5, $"{album.Title} {album.Performer} {album.TotalTime}");
-                    album.Tracks.ForEach(track =>
-                    {
-                        AppendTextSafe(textBox5, $"{track.Index} {track.Title} {track.Performer} {track.StartTime}");
-                    });
+                    LoadAlbum(textBox1.Text);
                 }
             }
+        }
+
+        private void LoadAlbum(string path)
+        {
+            var album = GetAlbumFormCueFile(path);
+            if (!File.Exists(album.File))
+                throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
+            textBox3.Text = album.Performer;
+            textBox4.Text = album.Title;
+            AppendTextSafe(textBox5, $"{album.Title} {album.Performer} {album.TotalTime}");
+            album.Tracks.ForEach(track =>
+            {
+                AppendTextSafe(textBox5, $"{track.Index} {track.Title} {track.Performer} {track.StartTime}");
+            });
         }
 
         private static void AppendTextSafe(TextBox textBox, string text)

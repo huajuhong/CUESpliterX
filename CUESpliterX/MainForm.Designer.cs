@@ -133,7 +133,7 @@
             textBox4.AllowDrop = true;
             textBox4.Location = new Point(192, 121);
             textBox4.Name = "textBox4";
-            textBox4.Size = new Size(174, 23);
+            textBox4.Size = new Size(442, 23);
             textBox4.TabIndex = 3;
             // 
             // label4
