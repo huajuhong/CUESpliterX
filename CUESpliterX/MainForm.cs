@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace CUESpliterX
 {
@@ -384,7 +385,6 @@ namespace CUESpliterX
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     textBox1.Text = fileDialog.FileName; // 显示选择的文件路径
-                    textBox2.Text = Path.GetDirectoryName(fileDialog.FileName);
                     LoadAlbum(textBox1.Text);
                 }
             }
@@ -392,6 +392,7 @@ namespace CUESpliterX
 
         private void LoadAlbum(string path)
         {
+            textBox2.Text = Path.GetDirectoryName(path);
             var album = GetAlbumFormCueFile(path);
             if (!File.Exists(album.File))
                 throw new FileNotFoundException($"未找到整轨源文件：{album.File}");
