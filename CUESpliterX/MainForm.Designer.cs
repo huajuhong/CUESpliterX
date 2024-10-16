@@ -42,6 +42,7 @@
             textBox5 = new TextBox();
             label5 = new Label();
             checkBox1 = new CheckBox();
+            linkLabel1 = new LinkLabel();
             SuspendLayout();
             // 
             // button1
@@ -173,11 +174,23 @@
             checkBox1.Text = "覆盖";
             checkBox1.UseVisualStyleBackColor = true;
             // 
+            // linkLabel1
+            // 
+            linkLabel1.AutoSize = true;
+            linkLabel1.Location = new Point(542, 153);
+            linkLabel1.Name = "linkLabel1";
+            linkLabel1.Size = new Size(92, 17);
+            linkLabel1.TabIndex = 9;
+            linkLabel1.TabStop = true;
+            linkLabel1.Text = "软件信息与支持";
+            linkLabel1.LinkClicked += linkLabel1_LinkClicked;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(linkLabel1);
             Controls.Add(checkBox1);
             Controls.Add(textBox5);
             Controls.Add(button3);
@@ -214,5 +227,6 @@
         private TextBox textBox5;
         private Label label5;
         private CheckBox checkBox1;
+        private LinkLabel linkLabel1;
     }
 }

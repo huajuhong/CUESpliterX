@@ -415,6 +415,12 @@ namespace CUESpliterX
                 textBox.AppendText(text + Environment.NewLine); // Ìí¼Ó»»ÐÐ·û
             }
         }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabel1.LinkVisited = true;
+            Process.Start("explorer.exe", "https://www.github.com/huajuhong/CUESpliterX");
+        }
     }
 
     internal class AlbumInfo
