@@ -12,7 +12,7 @@ namespace CUESpliterX
 
     internal static class Program
     {
-        public const string CurrentVersion = "1.0.1";
+        public const string CurrentVersion = "1.0.2";
         public const string GitHubAccount = "huajuhong";
         public const string GitHubRepository = "CUESpliterX";
         public const string GitHubRepositoryUrl = $"https://www.github.com/{GitHubAccount}/{GitHubRepository}"; // µ±Ç°°æ±¾ºÅ
