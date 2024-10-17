@@ -8,6 +8,9 @@ namespace CUESpliterX
     public partial class MainForm : Form
     {
         private static readonly Encoding gb2312 = Encoding.GetEncoding("GB2312");
+        private const string GitHubAccount = "huajuhong";
+        private const string GitHubRepository = "CUESpliterX";
+        private const string GitHubRepositoryUrl = $"https://www.github.com/{GitHubAccount}/{GitHubRepository}"; // µ±Ç°°æ±¾ºÅ
 
         public MainForm()
         {
@@ -152,7 +155,7 @@ namespace CUESpliterX
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             linkLabel1.LinkVisited = true;
-            Process.Start("explorer.exe", Program.GitHubRepositoryUrl);
+            Process.Start("explorer.exe", GitHubRepositoryUrl);
         }
 
         private void WriteTrackLog(TrackInfo track, string content)

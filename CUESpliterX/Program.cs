@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 namespace CUESpliterX
 {
@@ -13,16 +15,32 @@ namespace CUESpliterX
     internal static class Program
     {
         public const string CurrentVersion = "1.0.2";
-        public const string GitHubAccount = "huajuhong";
-        public const string GitHubRepository = "CUESpliterX";
-        public const string GitHubRepositoryUrl = $"https://www.github.com/{GitHubAccount}/{GitHubRepository}"; // 当前版本号
 
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static void Main()
+        private static void Main(string[] args)
         {
+            if (args.Length > 0)
+            {
+                string AutoUpdater = args[0];
+                if (AutoUpdater == "AutoUpdater")
+                {
+                    string path = "AutoUpdater.exe";
+                    var processes = Process.GetProcessesByName(AutoUpdater);
+                    foreach (Process p in processes)
+                    {
+                        p.Kill();
+                        p.WaitForExit();
+                        p.Dispose();
+                    }
+                    if (File.Exists(path))
+                    {
+                        File.Delete(path);
+                    }
+                }
+            }
             // 设置全局异常处理程序
             Application.ThreadException += new ThreadExceptionEventHandler(Application_ThreadException);
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
@@ -34,9 +52,52 @@ namespace CUESpliterX
             {
                 Directory.CreateDirectory("log");
             }
-            // 检查更新并启动主窗口
-            Updater.CheckForUpdates(CurrentVersion, GitHubAccount, GitHubRepository).GetAwaiter().GetResult();
+
+            // 从资源文件中提取更新程序并保存
+            ExtractAndRunAutoUpdater(out string updaterFilePath);
+
             Application.Run(new MainForm());
+        }
+
+        private static void ExtractAndRunAutoUpdater(out string path)
+        {
+            path = string.Empty;
+            try
+            {
+                string currentDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                string fileName = "AutoUpdater.exe";
+                path = Path.Combine(currentDirectory, fileName);
+                string resourceName = $"CUESpliterX.Resources.{fileName}";
+                var assembly = Assembly.GetExecutingAssembly();
+                if (assembly == null)
+                {
+                    return;
+                }
+                using Stream? resourceStream = assembly.GetManifestResourceStream(resourceName);
+                if (resourceStream == null)
+                {
+                    MessageBox.Show("未找到更新程序。");
+                    return;
+                }
+
+                // 将资源流复制到指定路径
+                using (var fs = new FileStream(path, FileMode.Create, FileAccess.Write))
+                {
+                    resourceStream.CopyTo(fs);
+                    fs.Dispose();
+                }
+                var process = Process.Start(path, CurrentVersion);
+                process.WaitForExit();
+                if (File.Exists(path))
+                {
+                    File.Delete(path);
+                }
+                LogMessage("更新程序提取成功，路径为：" + path);
+            }
+            catch (Exception ex)
+            {
+                LogException(ex);
+            }
         }
 
         // UI 线程中的未处理异常
@@ -63,7 +124,7 @@ namespace CUESpliterX
         }
 
         // 简单的日志记录函数
-        private static void LogException(Exception ex)
+        public static void LogException(Exception ex)
         {
             string logPath = "log\\error.log";
             string message = $"{DateTime.Now}: {ex}\n";

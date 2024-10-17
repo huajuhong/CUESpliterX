@@ -154,7 +154,7 @@
             textBox5.Multiline = true;
             textBox5.Name = "textBox5";
             textBox5.ScrollBars = ScrollBars.Vertical;
-            textBox5.Size = new Size(760, 228);
+            textBox5.Size = new Size(760, 212);
             textBox5.TabIndex = 7;
             // 
             // label5
@@ -162,9 +162,9 @@
             label5.AutoSize = true;
             label5.Location = new Point(12, 201);
             label5.Name = "label5";
-            label5.Size = new Size(68, 17);
+            label5.Size = new Size(44, 17);
             label5.TabIndex = 4;
-            label5.Text = "输出日志：";
+            label5.Text = "日志：";
             // 
             // checkBox1
             // 
@@ -179,7 +179,7 @@
             // linkLabel1
             // 
             linkLabel1.AutoSize = true;
-            linkLabel1.Location = new Point(542, 153);
+            linkLabel1.Location = new Point(680, 436);
             linkLabel1.Name = "linkLabel1";
             linkLabel1.Size = new Size(92, 17);
             linkLabel1.TabIndex = 9;
@@ -190,7 +190,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(406, 153);
+            label6.Location = new Point(12, 436);
             label6.Name = "label6";
             label6.Size = new Size(68, 17);
             label6.TabIndex = 10;
@@ -199,7 +199,7 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(480, 153);
+            label7.Location = new Point(86, 436);
             label7.Name = "label7";
             label7.Size = new Size(13, 17);
             label7.TabIndex = 11;
