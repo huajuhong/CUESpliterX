@@ -43,6 +43,8 @@
             label5 = new Label();
             checkBox1 = new CheckBox();
             linkLabel1 = new LinkLabel();
+            label6 = new Label();
+            label7 = new Label();
             SuspendLayout();
             // 
             // button1
@@ -185,11 +187,31 @@
             linkLabel1.Text = "软件信息与支持";
             linkLabel1.LinkClicked += linkLabel1_LinkClicked;
             // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(406, 153);
+            label6.Name = "label6";
+            label6.Size = new Size(68, 17);
+            label6.TabIndex = 10;
+            label6.Text = "当前版本：";
+            // 
+            // label7
+            // 
+            label7.AutoSize = true;
+            label7.Location = new Point(480, 153);
+            label7.Name = "label7";
+            label7.Size = new Size(13, 17);
+            label7.TabIndex = 11;
+            label7.Text = "-";
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 17F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(784, 461);
+            Controls.Add(label7);
+            Controls.Add(label6);
             Controls.Add(linkLabel1);
             Controls.Add(checkBox1);
             Controls.Add(textBox5);
@@ -228,5 +250,7 @@
         private Label label5;
         private CheckBox checkBox1;
         private LinkLabel linkLabel1;
+        private Label label6;
+        private Label label7;
     }
 }

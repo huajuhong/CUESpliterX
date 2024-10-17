@@ -1,7 +1,22 @@
+using System.Diagnostics;
+
 namespace CUESpliterX
 {
+    //格式基于维护更新日志，并且该项目遵循 语义化版本。
+    //Added(新增) 新添加的功能。
+    //Changed(变更) 对现有功能的变更。
+    //Deprecated(废弃) 已经不建议使用，即将移除的功能。
+    //Removed(移除) 已经移除的功能。
+    //Fixed(修复) 对 bug 的修复。
+    //Security(安全) 对安全性的改进。
+
     internal static class Program
     {
+        public const string CurrentVersion = "1.0.1";
+        public const string GitHubAccount = "huajuhong";
+        public const string GitHubRepository = "CUESpliterX";
+        public const string GitHubRepositoryUrl = $"https://www.github.com/{GitHubAccount}/{GitHubRepository}"; // 当前版本号
+
         /// <summary>
         ///  The main entry point for the application.
         /// </summary>
@@ -15,6 +30,12 @@ namespace CUESpliterX
             // 启动 WinForms 应用
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
             ApplicationConfiguration.Initialize();
+            if (!Directory.Exists("log"))
+            {
+                Directory.CreateDirectory("log");
+            }
+            // 检查更新并启动主窗口
+            Updater.CheckForUpdates(CurrentVersion, GitHubAccount, GitHubRepository).GetAwaiter().GetResult();
             Application.Run(new MainForm());
         }
 
@@ -44,8 +65,15 @@ namespace CUESpliterX
         // 简单的日志记录函数
         private static void LogException(Exception ex)
         {
-            string logPath = "error.log";
+            string logPath = "log\\error.log";
             string message = $"{DateTime.Now}: {ex}\n";
+            System.IO.File.AppendAllText(logPath, message);
+        }
+
+        public static void LogMessage(string content)
+        {
+            string logPath = "log\\message.log";
+            string message = $"{DateTime.Now}: {content}\n";
             System.IO.File.AppendAllText(logPath, message);
         }
     }

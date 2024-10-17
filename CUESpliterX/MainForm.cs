@@ -23,6 +23,7 @@ namespace CUESpliterX
             // 可选：设置最小和最大大小相同
             this.MinimumSize = this.Size; // 设置最小尺寸
             this.MaximumSize = this.Size; // 设置最大尺寸
+            label7.Text = Program.CurrentVersion;
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -88,6 +89,70 @@ namespace CUESpliterX
                 WriteTrackLog(track, "已完成" + (overridden ? "，覆盖" : ""));
                 AddMetadata(outputFile, track.Title, album.Performer, album.Title);
             }
+        }
+
+        private void textBox1_DragDrop(object sender, DragEventArgs e)
+        {
+            // 获取拖拽的文件路径
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files.Length > 0)
+            {
+                // 将第一个文件的路径显示在 TextBox 中
+                textBox1.Text = files[0];
+                LoadAlbum(textBox1.Text);
+            }
+        }
+
+        private void textBox1_DragEnter(object sender, DragEventArgs e)
+        {
+            // 检查拖拽的内容是否是文件
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                // 如果是文件，设置效果为 Copy
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                // 如果不是文件，设置效果为 None
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // 创建并配置 FolderBrowserDialog
+            using FolderBrowserDialog folderDialog = new();
+            folderDialog.Description = "请选择一个文件夹";
+            folderDialog.ShowNewFolderButton = true; // 允许新建文件夹
+
+            // 显示对话框并处理选择的结果
+            if (folderDialog.ShowDialog() == DialogResult.OK)
+            {
+                textBox2.Text = folderDialog.SelectedPath; // 显示选择的文件夹路径
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            // 创建并配置 OpenFileDialog
+            using (OpenFileDialog fileDialog = new OpenFileDialog())
+            {
+                fileDialog.Title = "请选择一个 CUE 文件";
+                fileDialog.Filter = "CUE 文件 (*.cue)|*.cue"; // 过滤器，可根据需要修改
+
+                // 显示对话框并处理选择的结果
+                if (fileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBox1.Text = fileDialog.FileName; // 显示选择的文件路径
+                    LoadAlbum(textBox1.Text);
+                }
+            }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            linkLabel1.LinkVisited = true;
+            Process.Start("explorer.exe", Program.GitHubRepositoryUrl);
         }
 
         private void WriteTrackLog(TrackInfo track, string content)
@@ -234,70 +299,68 @@ namespace CUESpliterX
                 CreateNoWindow = true
             };
 
-            using (var process = new Process { StartInfo = startInfo })
-            {
-                // 1
-                //process.OutputDataReceived += (sender, e) =>
-                //{
-                //    if (!string.IsNullOrEmpty(e.Data))
-                //        Console.WriteLine("FFmpeg output: " + e.Data);
-                //};
+            using var process = new Process { StartInfo = startInfo };
+            // 1
+            //process.OutputDataReceived += (sender, e) =>
+            //{
+            //    if (!string.IsNullOrEmpty(e.Data))
+            //        Console.WriteLine("FFmpeg output: " + e.Data);
+            //};
 
-                //process.ErrorDataReceived += (sender, e) =>
-                //{
-                //    if (!string.IsNullOrEmpty(e.Data))
-                //        Console.WriteLine("FFmpeg error: " + e.Data);
-                //};
-                //process.Start();
+            //process.ErrorDataReceived += (sender, e) =>
+            //{
+            //    if (!string.IsNullOrEmpty(e.Data))
+            //        Console.WriteLine("FFmpeg error: " + e.Data);
+            //};
+            //process.Start();
 
-                //process.BeginOutputReadLine();
-                //process.BeginErrorReadLine();
+            //process.BeginOutputReadLine();
+            //process.BeginErrorReadLine();
 
-                //process.WaitForExit();
+            //process.WaitForExit();
 
-                //if (process.ExitCode != 0)
-                //    throw new Exception("FFmpeg execution failed");
+            //if (process.ExitCode != 0)
+            //    throw new Exception("FFmpeg execution failed");
 
-                // 2
-                //process.Start();
+            // 2
+            //process.Start();
 
-                //var outputBuilder = new StringBuilder();
-                //var errorBuilder = new StringBuilder();
+            //var outputBuilder = new StringBuilder();
+            //var errorBuilder = new StringBuilder();
 
-                //Task.Run(() =>
-                //{
-                //    while (!process.StandardOutput.EndOfStream)
-                //        outputBuilder.AppendLine(process.StandardOutput.ReadLine());
-                //});
+            //Task.Run(() =>
+            //{
+            //    while (!process.StandardOutput.EndOfStream)
+            //        outputBuilder.AppendLine(process.StandardOutput.ReadLine());
+            //});
 
-                //Task.Run(() =>
-                //{
-                //    while (!process.StandardError.EndOfStream)
-                //        errorBuilder.AppendLine(process.StandardError.ReadLine());
-                //});
+            //Task.Run(() =>
+            //{
+            //    while (!process.StandardError.EndOfStream)
+            //        errorBuilder.AppendLine(process.StandardError.ReadLine());
+            //});
 
-                //process.WaitForExit();
+            //process.WaitForExit();
 
-                //if (process.ExitCode != 0)
-                //    throw new Exception($"FFmpeg error: {errorBuilder}");
+            //if (process.ExitCode != 0)
+            //    throw new Exception($"FFmpeg error: {errorBuilder}");
 
-                //Console.WriteLine("FFmpeg output: " + outputBuilder);
+            //Console.WriteLine("FFmpeg output: " + outputBuilder);
 
-                // 3
-                process.Start();
+            // 3
+            process.Start();
 
-                // 异步读取输出和错误
-                var outputTask = process.StandardOutput.ReadToEndAsync();
-                var errorTask = process.StandardError.ReadToEndAsync();
+            // 异步读取输出和错误
+            var outputTask = process.StandardOutput.ReadToEndAsync();
+            var errorTask = process.StandardError.ReadToEndAsync();
 
-                await Task.WhenAll(outputTask, errorTask); // 等待所有读取完成
-                process.WaitForExit();
+            await Task.WhenAll(outputTask, errorTask); // 等待所有读取完成
+            process.WaitForExit();
 
-                if (process.ExitCode != 0)
-                    throw new Exception($"FFmpeg error: {errorTask.Result}");
+            if (process.ExitCode != 0)
+                throw new Exception($"FFmpeg error: {errorTask.Result}");
 
-                //AppendTextSafe(textBox5, "FFmpeg output: " + outputTask.Result);
-            }
+            //AppendTextSafe(textBox5, "FFmpeg output: " + outputTask.Result);
         }
 
         private static void AddMetadata(string filePath, string title, string artist, string album)
@@ -332,64 +395,6 @@ namespace CUESpliterX
             stream.Write(dataBytes, 0, dataBytes.Length);
         }
 
-        private void textBox1_DragDrop(object sender, DragEventArgs e)
-        {
-            // 获取拖拽的文件路径
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (files.Length > 0)
-            {
-                // 将第一个文件的路径显示在 TextBox 中
-                textBox1.Text = files[0];
-                LoadAlbum(textBox1.Text);
-            }
-        }
-
-        private void textBox1_DragEnter(object sender, DragEventArgs e)
-        {
-            // 检查拖拽的内容是否是文件
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                // 如果是文件，设置效果为 Copy
-                e.Effect = DragDropEffects.Copy;
-            }
-            else
-            {
-                // 如果不是文件，设置效果为 None
-                e.Effect = DragDropEffects.None;
-            }
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            // 创建并配置 FolderBrowserDialog
-            using FolderBrowserDialog folderDialog = new();
-            folderDialog.Description = "请选择一个文件夹";
-            folderDialog.ShowNewFolderButton = true; // 允许新建文件夹
-
-            // 显示对话框并处理选择的结果
-            if (folderDialog.ShowDialog() == DialogResult.OK)
-            {
-                textBox2.Text = folderDialog.SelectedPath; // 显示选择的文件夹路径
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            // 创建并配置 OpenFileDialog
-            using (OpenFileDialog fileDialog = new OpenFileDialog())
-            {
-                fileDialog.Title = "请选择一个 CUE 文件";
-                fileDialog.Filter = "CUE 文件 (*.cue)|*.cue"; // 过滤器，可根据需要修改
-
-                // 显示对话框并处理选择的结果
-                if (fileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    textBox1.Text = fileDialog.FileName; // 显示选择的文件路径
-                    LoadAlbum(textBox1.Text);
-                }
-            }
-        }
-
         private void LoadAlbum(string path)
         {
             textBox2.Text = Path.GetDirectoryName(path);
@@ -415,12 +420,6 @@ namespace CUESpliterX
             {
                 textBox.AppendText(text + Environment.NewLine); // 添加换行符
             }
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            linkLabel1.LinkVisited = true;
-            Process.Start("explorer.exe", "https://www.github.com/huajuhong/CUESpliterX");
         }
     }
 
