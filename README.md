@@ -12,5 +12,5 @@
 1. 解压后将bin目录设置到环境变量，重启电脑；
 2. 直接将bin目录的ffmpeg.exe复制到与CUESpliterX.exe同级的目录。
 ### 三、下载最新程序
-[点击进入页面](https://github.com/huajuhong/CUESpliterX/releases)选择最新版本的'CUESpliterX.exe'下载
+[点击进入页面](https://github.com/huajuhong/CUESpliterX/releases)选择最新版本的`CUESpliterX.exe`下载
 > 如若在使用中有问题可以在github的Issues中提问交流，也可以联系微信(-81652393)或QQ(891424065)。
