@@ -10,4 +10,4 @@
 
 有两种安装方法：
 1. 解压后将bin目录设置到环境变量，重启电脑；
-2. 直接将bin目录的ffmpeg.exe复制到CUESpliterX.exe同级目录。
+2. 直接将bin目录的ffmpeg.exe复制到与CUESpliterX.exe同级的目录。
